@@ -93,7 +93,9 @@ pub enum AnySeries<'a, Y> {
 impl<'a, Y> AnySeries<'a, Y> {
     pub fn for_basis(basis: Basis, data: &'a BTreeMap<u64, Y>) -> Self {
         match basis {
-            Basis::Tick(_) | Basis::Volume(_) | Basis::Range(_) => Self::Reversed(ReversedBTreeSeries::new(data)),
+            Basis::Tick(_) | Basis::Volume(_) | Basis::Range(_) => {
+                Self::Reversed(ReversedBTreeSeries::new(data))
+            }
             Basis::Time(_) => Self::Forward(data),
         }
     }

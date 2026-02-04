@@ -1086,7 +1086,9 @@ impl State {
                                                 Basis::Time(tf) => {
                                                     *push_freq = exchange::PushFrequency::Custom(tf)
                                                 }
-                                                Basis::Tick(_) | Basis::Volume(_) | Basis::Range(_) => {
+                                                Basis::Tick(_)
+                                                | Basis::Volume(_)
+                                                | Basis::Range(_) => {
                                                     *push_freq =
                                                         exchange::PushFrequency::ServerDefault
                                                 }

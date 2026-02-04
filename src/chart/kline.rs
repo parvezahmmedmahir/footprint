@@ -32,7 +32,7 @@ use std::time::Instant;
 #[derive(Clone, Debug)]
 pub struct RejectionZone {
     pub price_level: Price,
-    pub strength: f32, // 0.0 to 1.0
+    pub strength: f32,     // 0.0 to 1.0
     pub volume_ratio: f32, // Buy/Sell volume ratio
     pub timestamp: u64,
     pub zone_type: RejectionType,
@@ -42,7 +42,7 @@ pub struct RejectionZone {
 pub enum RejectionType {
     BuyerRejection,  // Strong buying pressure rejection
     SellerRejection, // Strong selling pressure rejection
-    KeyLevel        // Significant support/resistance
+    KeyLevel,        // Significant support/resistance
 }
 
 // NEW: Enhanced footprint configuration
@@ -394,7 +394,6 @@ impl KlineChart {
         }
     }
 
-
     // NEW: Enhanced rejection detection method
     fn detect_rejection_zones(&mut self, visible_earliest: u64, visible_latest: u64) {
         if !self.footprint_config.show_rejection_zones {
@@ -406,18 +405,34 @@ impl KlineChart {
 
         match &self.data_source {
             PlotData::TimeBased(timeseries) => {
-                for (timestamp, dp) in timeseries.datapoints.range(visible_earliest..=visible_latest) {
-                    self.analyze_datapoint_for_rejection(*timestamp, &dp.kline, &dp.footprint, &mut new_zones);
+                for (timestamp, dp) in timeseries
+                    .datapoints
+                    .range(visible_earliest..=visible_latest)
+                {
+                    self.analyze_datapoint_for_rejection(
+                        *timestamp,
+                        &dp.kline,
+                        &dp.footprint,
+                        &mut new_zones,
+                    );
                 }
             }
             PlotData::TickBased(tick_aggr) => {
                 let earliest = visible_earliest as usize;
                 let latest = visible_latest as usize;
 
-                for (index, dp) in tick_aggr.datapoints.iter().enumerate()
-                    .filter(|(index, _)| *index >= earliest && *index <= latest) 
+                for (index, dp) in tick_aggr
+                    .datapoints
+                    .iter()
+                    .enumerate()
+                    .filter(|(index, _)| *index >= earliest && *index <= latest)
                 {
-                    self.analyze_datapoint_for_rejection(index as u64, &dp.kline, &dp.footprint, &mut new_zones);
+                    self.analyze_datapoint_for_rejection(
+                        index as u64,
+                        &dp.kline,
+                        &dp.footprint,
+                        &mut new_zones,
+                    );
                 }
             }
         }
@@ -426,9 +441,17 @@ impl KlineChart {
     }
 
     // NEW: Advanced rejection analysis
-    fn analyze_datapoint_for_rejection(&self, timestamp: u64, kline: &Kline, footprint: &KlineTrades, zones: &mut Vec<RejectionZone>) {
+    fn analyze_datapoint_for_rejection(
+        &self,
+        timestamp: u64,
+        kline: &Kline,
+        footprint: &KlineTrades,
+        zones: &mut Vec<RejectionZone>,
+    ) {
         let total_volume: f32 = footprint.trades.values().map(|g| g.total_qty()).sum();
-        if total_volume == 0.0 { return; }
+        if total_volume == 0.0 {
+            return;
+        }
 
         // Analyze each price level for rejection signals
         for (price, group) in &footprint.trades {
@@ -466,9 +489,15 @@ impl KlineChart {
             // For now, let's just note we'd need to collect them here
         }
     }
-    
+
     // NEW: Calculate rejection strength with multiple factors
-    fn calculate_rejection_strength(&self, price: &Price, kline: &Kline, group: &data::chart::kline::GroupedTrades, total_volume: f32) -> f32 {
+    fn calculate_rejection_strength(
+        &self,
+        price: &Price,
+        kline: &Kline,
+        group: &data::chart::kline::GroupedTrades,
+        total_volume: f32,
+    ) -> f32 {
         let mut strength: f32 = 0.0;
 
         // Volume concentration factor (20% weight)
@@ -483,9 +512,15 @@ impl KlineChart {
         let price_f32 = price.to_f32();
         let price_position = if kline.high.to_f32() != kline.low.to_f32() {
             (price_f32 - kline.low.to_f32()) / (kline.high.to_f32() - kline.low.to_f32())
-        } else { 0.5 };
+        } else {
+            0.5
+        };
         // Extreme prices have higher rejection significance
-        let position_strength = if price_position < 0.2 || price_position > 0.8 { 0.3 } else { 0.1 };
+        let position_strength = if price_position < 0.2 || price_position > 0.8 {
+            0.3
+        } else {
+            0.1
+        };
         strength += position_strength;
 
         // Delta strength (20% weight)
@@ -1042,11 +1077,23 @@ impl canvas::Program<Message> for KlineChart {
 
             // NEW: Draw rejection zones and large orders first (as background)
             if self.footprint_config.show_rejection_zones {
-                draw_rejection_zones(frame, price_to_y, &self.rejection_zones, palette, chart.cell_width);
+                draw_rejection_zones(
+                    frame,
+                    price_to_y,
+                    &self.rejection_zones,
+                    palette,
+                    chart.cell_width,
+                );
             }
-            
+
             if self.footprint_config.highlight_large_orders {
-                 draw_large_orders(frame, price_to_y, &self.large_orders, palette, chart.cell_width);
+                draw_large_orders(
+                    frame,
+                    price_to_y,
+                    &self.large_orders,
+                    palette,
+                    chart.cell_width,
+                );
             }
 
             match &self.kind {
@@ -1965,7 +2012,8 @@ fn draw_crosshair_tooltip(
         let precision = ticker_info.min_ticksize;
 
         // NEW: Add rejection zone information to tooltip
-        let current_rejection: Option<&RejectionZone> = rejection_zones.iter()
+        let current_rejection: Option<&RejectionZone> = rejection_zones
+            .iter()
             .find(|zone| zone.timestamp == at_interval);
 
         let mut segments = vec![
@@ -2003,7 +2051,11 @@ fn draw_crosshair_tooltip(
             x: position.x,
             y: position.y,
             width: total_width,
-            height: if current_rejection.is_some() { 32.0 } else { 16.0 },
+            height: if current_rejection.is_some() {
+                32.0
+            } else {
+                16.0
+            },
         };
 
         frame.fill_rectangle(
@@ -2133,7 +2185,7 @@ fn draw_rejection_zones(
         // Draw rejection zone background with alpha based on strength
         let alpha = 0.1 + (zone.strength * 0.3);
         let zone_height = 2.0 + (zone.strength * 6.0); // Height proportional to strength
-        
+
         frame.fill_rectangle(
             Point::new(-cell_width * 10.0, y - zone_height / 2.0),
             Size::new(cell_width * 20.0, zone_height),
@@ -2145,7 +2197,7 @@ fn draw_rejection_zones(
             width: 1.0 + zone.strength,
             ..Default::default()
         };
-        
+
         frame.stroke(
             &Path::line(
                 Point::new(-cell_width * 10.0, y),
@@ -2162,8 +2214,14 @@ fn draw_rejection_zones(
                     // Up arrow for buyer rejection
                     Path::new(|builder| {
                         builder.move_to(Point::new(-cell_width * 8.0, y));
-                        builder.line_to(Point::new(-cell_width * 8.0 - indicator_size, y - indicator_size));
-                        builder.line_to(Point::new(-cell_width * 8.0 + indicator_size, y - indicator_size));
+                        builder.line_to(Point::new(
+                            -cell_width * 8.0 - indicator_size,
+                            y - indicator_size,
+                        ));
+                        builder.line_to(Point::new(
+                            -cell_width * 8.0 + indicator_size,
+                            y - indicator_size,
+                        ));
                         builder.close();
                     })
                 }
@@ -2171,8 +2229,14 @@ fn draw_rejection_zones(
                     // Down arrow for seller rejection
                     Path::new(|builder| {
                         builder.move_to(Point::new(-cell_width * 8.0, y));
-                        builder.line_to(Point::new(-cell_width * 8.0 - indicator_size, y + indicator_size));
-                        builder.line_to(Point::new(-cell_width * 8.0 + indicator_size, y + indicator_size));
+                        builder.line_to(Point::new(
+                            -cell_width * 8.0 - indicator_size,
+                            y + indicator_size,
+                        ));
+                        builder.line_to(Point::new(
+                            -cell_width * 8.0 + indicator_size,
+                            y + indicator_size,
+                        ));
                         builder.close();
                     })
                 }
@@ -2210,7 +2274,7 @@ fn draw_large_orders(
         };
 
         let order_size = (volume / 1000.0).min(10.0).max(2.0); // Scale circle size
-        
+
         frame.fill(
             &Path::circle(Point::new(cell_width * 12.0, y), order_size),
             color.scale_alpha(0.7),

@@ -45,7 +45,9 @@ impl ComparisonChart {
     pub fn new(basis: Basis, tickers: &[TickerInfo], config: Option<Config>) -> Self {
         let timeframe = match basis {
             Basis::Time(tf) => tf,
-            Basis::Tick(_) | Basis::Volume(_) | Basis::Range(_) => todo!("WIP: ComparisonChart does not support non-time basis"),
+            Basis::Tick(_) | Basis::Volume(_) | Basis::Range(_) => {
+                todo!("WIP: ComparisonChart does not support non-time basis")
+            }
         };
 
         let cfg = config.unwrap_or_default();

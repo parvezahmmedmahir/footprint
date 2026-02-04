@@ -633,7 +633,6 @@ impl LuxChart {
         }
     }
 
-
     fn scale_factor(&self, _window: window::Id) -> f32 {
         self.ui_scale_factor.into()
     }

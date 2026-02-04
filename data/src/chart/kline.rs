@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct RejectionZone {
     pub price_level: Price,
-    pub strength: f32, // 0.0 to 1.0
+    pub strength: f32,     // 0.0 to 1.0
     pub volume_ratio: f32, // Buy/Sell volume ratio
     pub timestamp: u64,
     pub zone_type: RejectionType,
@@ -19,7 +19,7 @@ pub struct RejectionZone {
 pub enum RejectionType {
     BuyerRejection,  // Strong buying pressure rejection
     SellerRejection, // Strong selling pressure rejection
-    KeyLevel        // Significant support/resistance
+    KeyLevel,        // Significant support/resistance
 }
 
 // NEW: Large order tracking

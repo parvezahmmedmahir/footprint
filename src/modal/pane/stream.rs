@@ -225,7 +225,9 @@ impl Modifier {
         match message {
             Message::TabSelected(tab) => Some(Action::TabSelected(tab)),
             Message::BasisSelected(basis) => match basis {
-                Basis::Time(_) | Basis::Volume(_) | Basis::Range(_) => Some(Action::BasisSelected(basis)),
+                Basis::Time(_) | Basis::Volume(_) | Basis::Range(_) => {
+                    Some(Action::BasisSelected(basis))
+                }
                 Basis::Tick(new_tc) => {
                     if let SelectedTab::TickCount {
                         raw_input_buf,
@@ -370,8 +372,10 @@ impl Modifier {
 
                     let tabs_row = {
                         if allows_tick_basis {
-                            let is_timeframe_selected =
-                                matches!(selected_basis, Some(Basis::Time(_) | Basis::Volume(_) | Basis::Range(_)));
+                            let is_timeframe_selected = matches!(
+                                selected_basis,
+                                Some(Basis::Time(_) | Basis::Volume(_) | Basis::Range(_))
+                            );
 
                             let tab_button =
                                 |content: iced::widget::text::Text<'a>,

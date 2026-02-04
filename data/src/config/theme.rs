@@ -1,7 +1,6 @@
 /// <https://github.com/iced-rs/iced/blob/master/core/src/theme/palette.rs> &
 /// <https://github.com/squidowl/halloy/blob/main/data/src/appearance/theme.rs>
 /// All credits and thanks to the authors of [`Halloy`] and [`iced_core`]
-
 pub use professional_trading_theme as default_theme;
 
 use iced_core::{
@@ -26,7 +25,9 @@ struct SerTheme {
 
 impl Default for Theme {
     fn default() -> Self {
-        Self(iced_core::Theme::Custom(professional_trading_theme().into()))
+        Self(iced_core::Theme::Custom(
+            professional_trading_theme().into(),
+        ))
     }
 }
 
@@ -41,12 +42,12 @@ pub fn professional_trading_theme() -> Custom {
     Custom::new(
         "Pro Trader".to_string(),
         Palette {
-            background: Color::from_rgb8(18, 18, 24),  // Dark blue-gray for better contrast
-            text: Color::from_rgb8(220, 220, 220),     // Brighter text for readability
-            primary: Color::from_rgb8(100, 149, 237),  // Cornflower blue for primary elements
-            success: Color::from_rgb8(50, 205, 50),    // Bright green for buy signals
-            danger: Color::from_rgb8(220, 80, 60),     // Bright red for sell signals
-            warning: Color::from_rgb8(255, 215, 0),    // Gold for warnings/key levels
+            background: Color::from_rgb8(18, 18, 24), // Dark blue-gray for better contrast
+            text: Color::from_rgb8(220, 220, 220),    // Brighter text for readability
+            primary: Color::from_rgb8(100, 149, 237), // Cornflower blue for primary elements
+            success: Color::from_rgb8(50, 205, 50),   // Bright green for buy signals
+            danger: Color::from_rgb8(220, 80, 60),    // Bright red for sell signals
+            warning: Color::from_rgb8(255, 215, 0),   // Gold for warnings/key levels
         },
     )
 }
@@ -56,12 +57,12 @@ pub fn high_contrast_trading_theme() -> Custom {
     Custom::new(
         "High Contrast".to_string(),
         Palette {
-            background: Color::from_rgb8(10, 10, 15),  // Very dark background
-            text: Color::from_rgb8(240, 240, 240),     // Very bright text
-            primary: Color::from_rgb8(70, 130, 180),   // Steel blue
-            success: Color::from_rgb8(0, 255, 127),    // Spring green
-            danger: Color::from_rgb8(255, 69, 0),      // Red-orange
-            warning: Color::from_rgb8(255, 223, 0),    // Golden yellow
+            background: Color::from_rgb8(10, 10, 15), // Very dark background
+            text: Color::from_rgb8(240, 240, 240),    // Very bright text
+            primary: Color::from_rgb8(70, 130, 180),  // Steel blue
+            success: Color::from_rgb8(0, 255, 127),   // Spring green
+            danger: Color::from_rgb8(255, 69, 0),     // Red-orange
+            warning: Color::from_rgb8(255, 223, 0),   // Golden yellow
         },
     )
 }
@@ -72,11 +73,11 @@ pub fn light_trading_theme() -> Custom {
         "Light Trader".to_string(),
         Palette {
             background: Color::from_rgb8(248, 248, 255), // Ghost white
-            text: Color::from_rgb8(40, 40, 40),         // Dark gray
-            primary: Color::from_rgb8(30, 144, 255),    // Dodger blue
-            success: Color::from_rgb8(34, 139, 34),     // Forest green
-            danger: Color::from_rgb8(178, 34, 34),      // Firebrick red
-            warning: Color::from_rgb8(205, 133, 63),    // Peru brown
+            text: Color::from_rgb8(40, 40, 40),          // Dark gray
+            primary: Color::from_rgb8(30, 144, 255),     // Dodger blue
+            success: Color::from_rgb8(34, 139, 34),      // Forest green
+            danger: Color::from_rgb8(178, 34, 34),       // Firebrick red
+            warning: Color::from_rgb8(205, 133, 63),     // Peru brown
         },
     )
 }
@@ -86,12 +87,12 @@ pub fn footprint_optimized_theme() -> Custom {
     Custom::new(
         "Footprint Pro".to_string(),
         Palette {
-            background: Color::from_rgb8(20, 20, 26),  // Optimal dark background
-            text: Color::from_rgb8(230, 230, 230),     // High visibility text
-            primary: Color::from_rgb8(65, 105, 225),   // Royal blue
-            success: Color::from_rgb8(60, 220, 120),   // Bright emerald green
-            danger: Color::from_rgb8(240, 80, 80),     // Bright coral red
-            warning: Color::from_rgb8(255, 200, 50),   // Bright amber
+            background: Color::from_rgb8(20, 20, 26), // Optimal dark background
+            text: Color::from_rgb8(230, 230, 230),    // High visibility text
+            primary: Color::from_rgb8(65, 105, 225),  // Royal blue
+            success: Color::from_rgb8(60, 220, 120),  // Bright emerald green
+            danger: Color::from_rgb8(240, 80, 80),    // Bright coral red
+            warning: Color::from_rgb8(255, 200, 50),  // Bright amber
         },
     )
 }
@@ -216,7 +217,10 @@ impl<'de> Deserialize<'de> for Theme {
 }
 
 /// NEW: Enhanced color utility functions for trading visualization
-pub fn get_rejection_color(zone_type: crate::chart::kline::RejectionType, palette: &Palette) -> Color {
+pub fn get_rejection_color(
+    zone_type: crate::chart::kline::RejectionType,
+    palette: &Palette,
+) -> Color {
     match zone_type {
         crate::chart::kline::RejectionType::BuyerRejection => brighten(palette.success, 0.2),
         crate::chart::kline::RejectionType::SellerRejection => brighten(palette.danger, 0.2),
@@ -225,18 +229,36 @@ pub fn get_rejection_color(zone_type: crate::chart::kline::RejectionType, palett
 }
 
 /// NEW: Get color for large orders with intensity based on volume
-pub fn get_large_order_color(is_buy: bool, volume: f32, max_volume: f32, palette: &Palette) -> Color {
-    let base_color = if is_buy { palette.success } else { palette.danger };
+pub fn get_large_order_color(
+    is_buy: bool,
+    volume: f32,
+    max_volume: f32,
+    palette: &Palette,
+) -> Color {
+    let base_color = if is_buy {
+        palette.success
+    } else {
+        palette.danger
+    };
     let intensity = (volume / max_volume.max(1.0)).min(1.0);
     let alpha = 0.5 + (intensity * 0.5);
     base_color.scale_alpha(alpha)
 }
 
 /// NEW: Get enhanced colors for volume bars with better contrast
-pub fn get_volume_bar_color(volume: f32, max_volume: f32, is_buy: bool, palette: &Palette) -> Color {
-    let base_color = if is_buy { palette.success } else { palette.danger };
+pub fn get_volume_bar_color(
+    volume: f32,
+    max_volume: f32,
+    is_buy: bool,
+    palette: &Palette,
+) -> Color {
+    let base_color = if is_buy {
+        palette.success
+    } else {
+        palette.danger
+    };
     let intensity = (volume / max_volume.max(1.0)).min(1.0);
-    
+
     // Enhanced contrast for better visibility
     if intensity > 0.7 {
         brighten(base_color, 0.3)
@@ -259,31 +281,50 @@ pub fn brighten(color: Color, amount: f32) -> Color {
 pub fn create_gradient(start: Color, end: Color, steps: usize) -> Vec<Color> {
     let start_hsva = to_hsva(start);
     let end_hsva = to_hsva(end);
-    
-    (0..steps).map(|i| {
-        let ratio = i as f32 / (steps - 1) as f32;
-        let h = start_hsva.hue.into_degrees() + (end_hsva.hue.into_degrees() - start_hsva.hue.into_degrees()) * ratio;
-        let s = start_hsva.saturation + (end_hsva.saturation - start_hsva.saturation) * ratio;
-        let v = start_hsva.value + (end_hsva.value - start_hsva.value) * ratio;
-        let a = start_hsva.alpha + (end_hsva.alpha - start_hsva.alpha) * ratio;
-        
-        from_hsva(Hsva::new(RgbHue::from_degrees(h), s, v, a))
-    }).collect()
+
+    (0..steps)
+        .map(|i| {
+            let ratio = i as f32 / (steps - 1) as f32;
+            let h = start_hsva.hue.into_degrees()
+                + (end_hsva.hue.into_degrees() - start_hsva.hue.into_degrees()) * ratio;
+            let s = start_hsva.saturation + (end_hsva.saturation - start_hsva.saturation) * ratio;
+            let v = start_hsva.value + (end_hsva.value - start_hsva.value) * ratio;
+            let a = start_hsva.alpha + (end_hsva.alpha - start_hsva.alpha) * ratio;
+
+            from_hsva(Hsva::new(RgbHue::from_degrees(h), s, v, a))
+        })
+        .collect()
 }
 
 /// NEW: Check if color combination has sufficient contrast for accessibility
 pub fn has_sufficient_contrast(foreground: Color, background: Color) -> bool {
     let l1 = luminance(foreground);
     let l2 = luminance(background);
-    let contrast = if l1 > l2 { (l1 + 0.05) / (l2 + 0.05) } else { (l2 + 0.05) / (l1 + 0.05) };
+    let contrast = if l1 > l2 {
+        (l1 + 0.05) / (l2 + 0.05)
+    } else {
+        (l2 + 0.05) / (l1 + 0.05)
+    };
     contrast >= 4.5 // WCAG AA standard
 }
 
 /// NEW: Calculate luminance for contrast checking
 fn luminance(color: Color) -> f32 {
-    let r = if color.r <= 0.03928 { color.r / 12.92 } else { ((color.r + 0.055) / 1.055).powf(2.4) };
-    let g = if color.g <= 0.03928 { color.g / 12.92 } else { ((color.g + 0.055) / 1.055).powf(2.4) };
-    let b = if color.b <= 0.03928 { color.b / 12.92 } else { ((color.b + 0.055) / 1.055).powf(2.4) };
+    let r = if color.r <= 0.03928 {
+        color.r / 12.92
+    } else {
+        ((color.r + 0.055) / 1.055).powf(2.4)
+    };
+    let g = if color.g <= 0.03928 {
+        color.g / 12.92
+    } else {
+        ((color.g + 0.055) / 1.055).powf(2.4)
+    };
+    let b = if color.b <= 0.03928 {
+        color.b / 12.92
+    } else {
+        ((color.b + 0.055) / 1.055).powf(2.4)
+    };
     0.2126 * r + 0.7152 * g + 0.0722 * b
 }
 
@@ -298,13 +339,15 @@ pub fn get_complementary_color(color: Color) -> Color {
 pub fn get_analogous_colors(color: Color, count: usize) -> Vec<Color> {
     let base_hsva = to_hsva(color);
     let step = 30.0; // 30 degree steps
-    
-    (0..count).map(|i| {
-        let offset = (i as f32 - (count as f32 - 1.0) / 2.0) * step;
-        let mut hsva = base_hsva;
-        hsva.hue = hsva.hue + RgbHue::from_degrees(offset);
-        from_hsva(hsva)
-    }).collect()
+
+    (0..count)
+        .map(|i| {
+            let offset = (i as f32 - (count as f32 - 1.0) / 2.0) * step;
+            let mut hsva = base_hsva;
+            hsva.hue = hsva.hue + RgbHue::from_degrees(offset);
+            from_hsva(hsva)
+        })
+        .collect()
 }
 
 pub fn hex_to_color(hex: &str) -> Option<Color> {
@@ -503,27 +546,42 @@ impl ThemeManager {
     pub fn new() -> Self {
         let themes = vec![
             ("Pro Trader".to_string(), Theme::default()),
-            ("High Contrast".to_string(), Theme(iced_core::Theme::Custom(high_contrast_trading_theme().into()))),
-            ("Light Trader".to_string(), Theme(iced_core::Theme::Custom(light_trading_theme().into()))),
-            ("Footprint Pro".to_string(), Theme(iced_core::Theme::Custom(footprint_optimized_theme().into()))),
+            (
+                "High Contrast".to_string(),
+                Theme(iced_core::Theme::Custom(
+                    high_contrast_trading_theme().into(),
+                )),
+            ),
+            (
+                "Light Trader".to_string(),
+                Theme(iced_core::Theme::Custom(light_trading_theme().into())),
+            ),
+            (
+                "Footprint Pro".to_string(),
+                Theme(iced_core::Theme::Custom(footprint_optimized_theme().into())),
+            ),
         ];
-        
+
         Self {
             current_theme: Theme::default(),
             available_themes: themes,
         }
     }
-    
+
     pub fn get_current_theme(&self) -> &Theme {
         &self.current_theme
     }
-    
+
     pub fn get_available_themes(&self) -> &[(String, Theme)] {
         &self.available_themes
     }
-    
+
     pub fn set_theme(&mut self, theme_name: &str) -> bool {
-        if let Some((_, theme)) = self.available_themes.iter().find(|(name, _)| name == theme_name) {
+        if let Some((_, theme)) = self
+            .available_themes
+            .iter()
+            .find(|(name, _)| name == theme_name)
+        {
             self.current_theme = theme.clone();
             true
         } else {

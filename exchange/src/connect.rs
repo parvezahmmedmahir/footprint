@@ -52,14 +52,16 @@ async fn setup_tcp(domain: &str) -> Result<TcpStream, AdapterError> {
         .map_err(|e| AdapterError::WebsocketError(e.to_string()))?;
 
     // High quality connection settings
-    stream.set_nodelay(true).map_err(|e| AdapterError::WebsocketError(e.to_string()))?;
-    
+    stream
+        .set_nodelay(true)
+        .map_err(|e| AdapterError::WebsocketError(e.to_string()))?;
+
     // Keepalive to ensure connection stays robust
     let sock_ref = socket2::SockRef::from(&stream);
     let mut ka = socket2::TcpKeepalive::new();
     ka = ka.with_time(std::time::Duration::from_secs(20));
     ka = ka.with_interval(std::time::Duration::from_secs(20));
-    
+
     if let Err(e) = sock_ref.set_tcp_keepalive(&ka) {
         log::warn!("Failed to set keepalive: {}", e);
     }

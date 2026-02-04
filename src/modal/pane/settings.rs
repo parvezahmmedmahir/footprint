@@ -780,7 +780,9 @@ pub mod study {
         ) -> Element<'a, Message<Self>> {
             let interval_ms = match basis {
                 data::chart::Basis::Time(interval) => interval.to_milliseconds(),
-                data::chart::Basis::Tick(_) | data::chart::Basis::Volume(_) | data::chart::Basis::Range(_) => {
+                data::chart::Basis::Tick(_)
+                | data::chart::Basis::Volume(_)
+                | data::chart::Basis::Range(_) => {
                     return iced::widget::center(text(
                         "Heatmap studies are not supported for non-time-based charts",
                     ))

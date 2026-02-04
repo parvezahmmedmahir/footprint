@@ -295,7 +295,7 @@ pub fn connect_market_stream(
         let mut already_fetching: bool = false;
         let mut prev_id: u64 = 0;
 
-        let contract_size = None; 
+        let contract_size = None;
         let size_in_quote_ccy = volume_size_unit() == SizeUnit::Quote;
 
         loop {
@@ -366,10 +366,10 @@ pub fn connect_market_stream(
                                             // Binance Linear Futures: qty is in base asset (e.g. BTC)
                                             // So logic is similar.
                                             let qty = if size_in_quote_ccy {
-                                                    (de_trade.qty * de_trade.price).round()
-                                                } else {
-                                                    de_trade.qty
-                                                };
+                                                (de_trade.qty * de_trade.price).round()
+                                            } else {
+                                                de_trade.qty
+                                            };
 
                                             let trade = Trade {
                                                 time: de_trade.time,
@@ -529,10 +529,11 @@ async fn fetch_depth(
         depth_limit
     );
 
-    let _weight = 20; 
+    let _weight = 20;
 
     let limiter = &FOREX_LIMITER;
-    let text = crate::limiter::http_request_with_limiter(&url, limiter, _weight, None, None).await?;
+    let text =
+        crate::limiter::http_request_with_limiter(&url, limiter, _weight, None, None).await?;
 
     let size_in_quote_ccy = volume_size_unit() == SizeUnit::Quote;
 
@@ -832,9 +833,8 @@ pub async fn fetch_ticksize() -> Result<HashMap<Ticker, Option<TickerInfo>>, Ada
 
     // Comprehensive list of Major/Minor/Exotic Forex currencies supported (Base)
     let accepted_bases = [
-        "EUR", "GBP", "JPY", "1000JPY", "AUD", "CAD", "CHF", "NZD", "SGD", 
-        "HKD", "SEK", "NOK", "DKK", "ZAR", "TRY", "BRL", "MXN",
-        "INR", "RUB", "KRW", "CNY", "IDR", "TWD", "THB", "VND"
+        "EUR", "GBP", "JPY", "1000JPY", "AUD", "CAD", "CHF", "NZD", "SGD", "HKD", "SEK", "NOK",
+        "DKK", "ZAR", "TRY", "BRL", "MXN", "INR", "RUB", "KRW", "CNY", "IDR", "TWD", "THB", "VND",
     ];
 
     for item in symbols {
@@ -855,12 +855,12 @@ pub async fn fetch_ticksize() -> Result<HashMap<Ticker, Option<TickerInfo>>, Ada
 
         let base_asset = item["baseAsset"].as_str().unwrap_or("");
         let quote_asset = item["quoteAsset"].as_str().unwrap_or("");
-        
+
         // Forex check for Futures:
         if quote_asset != "USDT" && quote_asset != "USDC" {
             continue;
         }
-        
+
         if !accepted_bases.contains(&base_asset) {
             continue;
         }
@@ -884,7 +884,7 @@ pub async fn fetch_ticksize() -> Result<HashMap<Ticker, Option<TickerInfo>>, Ada
             .map_err(|e| AdapterError::ParseError(format!("Failed to parse minQty: {e}")))?;
 
         // Contract size is usually 1 for standard pairs but good to check
-        let contract_size = item["contractSize"].as_f64().map(|v| v as f32); 
+        let contract_size = item["contractSize"].as_f64().map(|v| v as f32);
 
         let display_name = if symbol_str.ends_with("USDT") {
             format!("{}USD", base_asset.trim_start_matches("1000"))
@@ -927,9 +927,8 @@ pub async fn fetch_ticker_prices() -> Result<HashMap<Ticker, TickerStats>, Adapt
     let mut ticker_price_map = HashMap::new();
 
     let accepted_bases = [
-        "EUR", "GBP", "JPY", "1000JPY", "AUD", "CAD", "CHF", "NZD", "SGD", 
-        "HKD", "SEK", "NOK", "DKK", "ZAR", "TRY", "BRL", "MXN",
-        "INR", "RUB", "KRW", "CNY", "IDR", "TWD", "THB", "VND"
+        "EUR", "GBP", "JPY", "1000JPY", "AUD", "CAD", "CHF", "NZD", "SGD", "HKD", "SEK", "NOK",
+        "DKK", "ZAR", "TRY", "BRL", "MXN", "INR", "RUB", "KRW", "CNY", "IDR", "TWD", "THB", "VND",
     ];
 
     for item in parsed_response {
@@ -965,12 +964,10 @@ pub async fn fetch_ticker_prices() -> Result<HashMap<Ticker, TickerStats>, Adapt
             })?;
 
         let volume = item["quoteVolume"]
-                    .as_str()
-                    .ok_or_else(|| AdapterError::ParseError("Quote volume not found".to_string()))?
-                    .parse::<f32>()
-                    .map_err(|e| {
-                        AdapterError::ParseError(format!("Failed to parse quote volume: {e}"))
-                    })?;
+            .as_str()
+            .ok_or_else(|| AdapterError::ParseError("Quote volume not found".to_string()))?
+            .parse::<f32>()
+            .map_err(|e| AdapterError::ParseError(format!("Failed to parse quote volume: {e}")))?;
 
         let ticker_stats = TickerStats {
             mark_price: last_price,
@@ -1008,7 +1005,7 @@ pub async fn fetch_historical_oi(
     let mut url = format!("{}?symbol={}&period={}", base_url, ticker_str, period_str);
 
     if let Some((start, end)) = range {
-         // API limit is 30 days
+        // API limit is 30 days
         let thirty_days_ms = 30 * 24 * 60 * 60 * 1000;
         let thirty_days_ago = std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
@@ -1017,9 +1014,9 @@ pub async fn fetch_historical_oi(
             - thirty_days_ms;
 
         let adjusted_start = if start < thirty_days_ago {
-             thirty_days_ago
+            thirty_days_ago
         } else {
-             start
+            start
         };
         let interval_ms = period.to_milliseconds();
         let num_intervals = ((end - adjusted_start) / interval_ms).min(500);
@@ -1036,9 +1033,8 @@ pub async fn fetch_historical_oi(
 
     let text = crate::limiter::http_request_with_limiter(&url, limiter, weight, None, None).await?;
 
-    let binance_oi: Vec<DeOpenInterest> = serde_json::from_str(&text).map_err(|e| {
-        AdapterError::ParseError(format!("Failed to parse open interest: {e}"))
-    })?;
+    let binance_oi: Vec<DeOpenInterest> = serde_json::from_str(&text)
+        .map_err(|e| AdapterError::ParseError(format!("Failed to parse open interest: {e}")))?;
 
     // Open Interest is usually returned in base asset units or sometimes contracts.
     // For Linear Perps, it's usually Base Asset amount.
@@ -1046,7 +1042,7 @@ pub async fn fetch_historical_oi(
     // Actually, fetch_ticksize saves contract_size in TickerInfo, but we don't have TickerInfo here.
     // However, for standard Linear (USDT), 1 contract = 1 unit usually, unless specified.
     // We will just return the raw sum.
-    
+
     let open_interest = binance_oi
         .iter()
         .map(|x| OpenInterest {

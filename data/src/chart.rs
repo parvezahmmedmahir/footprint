@@ -125,10 +125,22 @@ impl<D: DataPoint> PlotData<D> {
 
         match self {
             PlotData::TimeBased(timeseries) => {
-                self.analyze_time_based_data(timeseries, start_interval, end_interval, config, &mut analysis);
+                self.analyze_time_based_data(
+                    timeseries,
+                    start_interval,
+                    end_interval,
+                    config,
+                    &mut analysis,
+                );
             }
             PlotData::TickBased(tick_aggr) => {
-                self.analyze_tick_based_data(tick_aggr, start_interval, end_interval, config, &mut analysis);
+                self.analyze_tick_based_data(
+                    tick_aggr,
+                    start_interval,
+                    end_interval,
+                    config,
+                    &mut analysis,
+                );
             }
         }
 
@@ -150,7 +162,13 @@ impl<D: DataPoint> PlotData<D> {
         }
 
         if config.auto_detect_support_resistance {
-            self.detect_support_resistance(timeseries, start_interval, end_interval, config, analysis);
+            self.detect_support_resistance(
+                timeseries,
+                start_interval,
+                end_interval,
+                config,
+                analysis,
+            );
         }
     }
 
@@ -165,8 +183,11 @@ impl<D: DataPoint> PlotData<D> {
         let start_idx = start_interval as usize;
         let end_idx = end_interval as usize;
 
-        for (index, dp) in tick_aggr.datapoints.iter().enumerate()
-            .filter(|(index, _)| *index >= start_idx && *index <= end_idx) 
+        for (index, dp) in tick_aggr
+            .datapoints
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| *index >= start_idx && *index <= end_idx)
         {
             self.analyze_datapoint(index as u64, &dp.kline, &dp.footprint, config, analysis);
         }
@@ -204,11 +225,11 @@ impl<D: DataPoint> PlotData<D> {
         analysis: &mut MarketAnalysis,
     ) {
         let total_volume: f32 = footprint.trades.values().map(|g| g.total_qty()).sum();
-        
+
         for (price, group) in &footprint.trades {
             if group.total_qty() >= config.volume_threshold {
                 let cluster_strength = group.total_qty() / total_volume.max(1.0);
-                
+
                 analysis.volume_clusters.push(VolumeCluster {
                     price_level: *price,
                     total_volume: group.total_qty(),
@@ -258,17 +279,20 @@ impl<D: DataPoint> PlotData<D> {
     ) {
         // Simplified support/resistance detection based on price touches
         // In a real implementation, this would be more sophisticated
-        
-        let price_levels: Vec<f32> = timeseries.datapoints
+
+        let price_levels: Vec<f32> = timeseries
+            .datapoints
             .range(start_interval..=end_interval)
             .flat_map(|(_, dp)| {
-                dp.kline().map(|k| vec![k.low.to_f32(), k.high.to_f32()]).unwrap_or_default()
+                dp.kline()
+                    .map(|k| vec![k.low.to_f32(), k.high.to_f32()])
+                    .unwrap_or_default()
             })
             .collect();
 
         // Group nearby price levels and count touches
         let mut level_map: std::collections::HashMap<u64, u32> = std::collections::HashMap::new();
-        
+
         for price in price_levels {
             let rounded_price = ((price / 0.01).round() * 100.0) as u64; // Use u64 as key for predictability
             *level_map.entry(rounded_price).or_insert(0) += 1;
@@ -323,8 +347,11 @@ impl<D: DataPoint> PlotData<D> {
                 let start_idx = start_interval as usize;
                 let end_idx = end_interval as usize;
 
-                for (index, dp) in tick_aggr.datapoints.iter().enumerate()
-                    .filter(|(index, _)| *index >= start_idx && *index <= end_idx) 
+                for (index, dp) in tick_aggr
+                    .datapoints
+                    .iter()
+                    .enumerate()
+                    .filter(|(index, _)| *index >= start_idx && *index <= end_idx)
                 {
                     for (price, group) in &dp.footprint.trades {
                         distribution.push(VolumeCluster {
@@ -381,9 +408,9 @@ pub enum Autoscale {
     CenterLatest,
     FitToVisible,
     // NEW: Additional autoscale options for trading
-    FitToVolume,    // Scale based on volume distribution
-    LockToPrice,    // Lock to specific price level
-    DynamicRange,   // Adaptive scaling based on volatility
+    FitToVolume,  // Scale based on volume distribution
+    LockToPrice,  // Lock to specific price level
+    DynamicRange, // Adaptive scaling based on volatility
 }
 
 /// Defines how chart data is aggregated and displayed along the x-axis.
@@ -484,11 +511,11 @@ pub enum Study {
 // NEW: Volume profile study configuration
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct VolumeProfileStudy {
-    pub show_poc: bool,           // Point of Control
-    pub show_vah: bool,           // Value Area High
-    pub show_val: bool,           // Value Area Low
-    pub va_percentage: f32,       // Value Area percentage (typically 70%)
-    pub session_based: bool,      // Session-based or total profile
+    pub show_poc: bool,      // Point of Control
+    pub show_vah: bool,      // Value Area High
+    pub show_val: bool,      // Value Area Low
+    pub va_percentage: f32,  // Value Area percentage (typically 70%)
+    pub session_based: bool, // Session-based or total profile
 }
 
 impl Default for VolumeProfileStudy {
@@ -506,9 +533,9 @@ impl Default for VolumeProfileStudy {
 // NEW: Market depth study
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct MarketDepthStudy {
-    pub levels: u32,              // Number of levels to show
-    pub show_cumulative: bool,    // Show cumulative volume
-    pub animate_changes: bool,    // Animate depth changes
+    pub levels: u32,           // Number of levels to show
+    pub show_cumulative: bool, // Show cumulative volume
+    pub animate_changes: bool, // Animate depth changes
 }
 
 impl Default for MarketDepthStudy {
@@ -544,9 +571,9 @@ impl Default for OrderFlowStudy {
 // NEW: Chart performance optimization settings
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct PerformanceConfig {
-    pub max_data_points: usize,   // Maximum points to keep in memory
+    pub max_data_points: usize, // Maximum points to keep in memory
     pub render_quality: RenderQuality,
-    pub update_frequency: u32,    // Updates per second
+    pub update_frequency: u32, // Updates per second
     pub cache_enabled: bool,
 }
 

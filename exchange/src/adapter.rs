@@ -11,10 +11,9 @@ use std::{collections::HashMap, str::FromStr, sync::Arc, time::Instant};
 
 pub mod binance;
 pub mod bybit;
+pub mod forex;
 pub mod hyperliquid;
 pub mod okex;
-pub mod forex;
-
 
 /// Persisted stream resolution to avoid loop retries
 pub const RESOLVE_RETRY_INTERVAL: std::time::Duration = std::time::Duration::from_secs(2);
@@ -433,8 +432,6 @@ pub enum ExchangeInclusive {
     Forex,
 }
 
-
-
 impl ExchangeInclusive {
     pub const ALL: [ExchangeInclusive; 5] = [
         ExchangeInclusive::Bybit,
@@ -443,8 +440,6 @@ impl ExchangeInclusive {
         ExchangeInclusive::Okex,
         ExchangeInclusive::Forex,
     ];
-
-
 
     pub fn of(ex: Exchange) -> Self {
         match ex {
@@ -458,7 +453,6 @@ impl ExchangeInclusive {
         }
     }
 }
-
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, Serialize, Enum)]
 pub enum Exchange {
@@ -475,8 +469,6 @@ pub enum Exchange {
     OkexSpot,
     Forex,
 }
-
-
 
 impl std::fmt::Display for Exchange {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -497,11 +489,9 @@ impl std::fmt::Display for Exchange {
                 Exchange::OkexSpot => "Okex Spot",
                 Exchange::Forex => "Forex",
             }
-
         )
     }
 }
-
 
 impl FromStr for Exchange {
     type Err = String;
@@ -525,7 +515,6 @@ impl FromStr for Exchange {
     }
 }
 
-
 impl Exchange {
     pub const ALL: [Exchange; 12] = [
         Exchange::BinanceLinear,
@@ -542,7 +531,6 @@ impl Exchange {
         Exchange::Forex,
     ];
 
-
     pub fn market_type(&self) -> MarketKind {
         match self {
             Exchange::BinanceLinear
@@ -558,9 +546,7 @@ impl Exchange {
             | Exchange::HyperliquidSpot
             | Exchange::OkexSpot => MarketKind::Spot,
         }
-
     }
-
 
     pub fn is_depth_client_aggr(&self) -> bool {
         !matches!(
@@ -680,9 +666,7 @@ pub async fn fetch_ticker_info(
         }
         Exchange::Forex => forex::fetch_ticksize().await,
     }
-
 }
-
 
 pub async fn fetch_ticker_prices(
     exchange: Exchange,
@@ -704,9 +688,7 @@ pub async fn fetch_ticker_prices(
         }
         Exchange::Forex => forex::fetch_ticker_prices().await,
     }
-
 }
-
 
 pub async fn fetch_klines(
     ticker_info: TickerInfo,
@@ -728,9 +710,7 @@ pub async fn fetch_klines(
         }
         Exchange::Forex => forex::fetch_klines(ticker_info, timeframe, range).await,
     }
-
 }
-
 
 pub async fn fetch_open_interest(
     ticker: Ticker,
@@ -749,6 +729,5 @@ pub async fn fetch_open_interest(
         }
         Exchange::Forex => forex::fetch_historical_oi(ticker, range, timeframe).await,
         _ => Err(AdapterError::InvalidRequest("Invalid exchange".to_string())),
-
     }
 }

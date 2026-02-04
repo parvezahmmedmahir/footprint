@@ -56,8 +56,10 @@ impl OpenInterestIndicator {
                 }
             }
             Basis::Tick(_) | Basis::Volume(_) | Basis::Range(_) => {
-                return center(text("WIP: Open Interest is not available for non-time-based charts."))
-                    .into();
+                return center(text(
+                    "WIP: Open Interest is not available for non-time-based charts.",
+                ))
+                .into();
             }
         }
 

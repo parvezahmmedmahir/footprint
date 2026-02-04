@@ -121,7 +121,11 @@ impl<D: DataPoint> TimeSeries<D> {
         if self.datapoints.is_empty() {
             return None;
         }
-        let sum: f32 = self.datapoints.values().map(|dp| dp.last_price().to_f32()).sum();
+        let sum: f32 = self
+            .datapoints
+            .values()
+            .map(|dp| dp.last_price().to_f32())
+            .sum();
         Some(sum / self.datapoints.len() as f32)
     }
 
