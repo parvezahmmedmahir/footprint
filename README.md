@@ -1,102 +1,325 @@
-# Lux Chart
+# LUX CHART - Advanced Trading Analytics Platform
 
-[![Crates.io](https://img.shields.io/crates/v/flowsurface)](https://crates.io/crates/flowsurface)
-[![Lint](https://github.com/flowsurface-rs/flowsurface/actions/workflows/lint.yml/badge.svg)](https://github.com/flowsurface-rs/flowsurface/actions/workflows/lint.yml)
-[![Format](https://github.com/flowsurface-rs/flowsurface/actions/workflows/format.yml/badge.svg)](https://github.com/flowsurface-rs/flowsurface/actions/workflows/format.yml)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/flowsurface-rs/flowsurface/blob/main/LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/parvezahmmedmahir/footprint/blob/main/LICENSE)
 [![Made with iced](https://iced.rs/badge.svg)](https://github.com/iced-rs/iced)
+[![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=flat&logo=rust&logoColor=white)](https://www.rust-lang.org/)
 
-An experimental open-source desktop charting application. Supports Binance, Bybit, Hyperliquid and OKX
+A powerful, open-source desktop charting and market analysis application built with Rust. Supports real-time data from **Binance**, **Bybit**, **Hyperliquid**, and **OKX** exchanges.
 
 <div align="center">
   <img
-    src="https://github.com/user-attachments/assets/baddc444-e079-48e5-82b2-4f97094eba07"
-    alt="Flowsurface screenshot"
-    style="max-width: 100%; height: auto;"
+    src="./assets/screenshot.png"
+    alt="LUX CHART - Advanced Trading Interface"
+    style="max-width: 100%; height: auto; border-radius: 8px;"
   />
 </div>
 
-### Key Features
+---
 
--   Multiple chart/panel types:
-    -   **Heatmap (Historical DOM):** Uses live trades and L2 orderbook to create a time-series heatmap chart. Supports customizable price grouping, different time aggregations, fixed or visible range volume profiles.
-    -   **Candlestick:** Traditional kline chart supporting both time-based and custom tick-based intervals.
-    -   **Footprint:** Price grouped and interval aggregated views for trades on top of a candlestick chart. Supports different clustering methods, configurable imbalance and naked-POC studies.
-    -   **Time & Sales:** Scrollable list of live trades.
-    -   **DOM (Depth of Market) / Ladder:** Displays current L2 orderbook alongside recent trade volumes on grouped price levels.
-    -   **Comparison:** Line graph for comparing multiple data sources, normalized by kline `close` prices on a percentage scale
--   Real-time sound effects driven by trade streams
--   Multi window/monitor support
--   Pane linking for quickly switching tickers across multiple panes
--   Persistent layouts and customizable themes with editable color palettes
+## 🚀 Key Features
 
-##### Market data is received directly from exchanges' public REST APIs and WebSockets
+### 📊 Multiple Chart Types
 
-#
+#### **Heatmap (Historical Depth of Market)**
+- Real-time visualization of order book depth and trade flow
+- Time-series heatmap showing market liquidity and trade activity
+- Customizable price grouping and aggregation intervals
+- Volume profile analysis (fixed window or visible range)
+- Trade size filtering and order size filtering
+- Advanced noise reduction with order coalescing
+- Dynamic circle radius scaling for trade visualization
+- Support for multiple heatmap studies and overlays
 
-#### Historical Trades on Footprint Charts:
+#### **Footprint Charts**
+- Price-grouped interval aggregation of trades over candlesticks
+- Multiple cluster visualization modes:
+  - **Bid/Ask Clusters**: Separate buy and sell volumes
+  - **Volume Profile**: Total volume at each price level
+  - **Delta Profile**: Net buying/selling pressure
+- Configurable cluster scaling:
+  - Visible Range: Scale based on visible candles
+  - Hybrid: Blend global and per-candle scaling
+  - Per-Candle: Individual candle normalization
+- Advanced studies:
+  - **Naked Point of Control (NPoC)**: Identifies unfilled high-volume nodes
+  - **Imbalance Detection**: Highlights significant order flow imbalances
+  - Configurable lookback periods and thresholds
+- Support for both time-based and tick-based intervals
 
--   By default, it captures and plots live trades in real time via WebSocket.
--   For Binance tickers, you can optionally backfill the visible time range by enabling trade fetching in the settings:
-    -   [data.binance.vision](https://data.binance.vision/): Fast daily bulk downloads (no intraday).
-    -   REST API (e.g., `/fapi/v1/aggTrades`): Slower, paginated intraday fetching (subject to rate limits).
-    -   The Binance connector can use either or both methods to retrieve historical data as needed.
--   Fetching trades for Bybit/Hyperliquid is not supported, as both lack a suitable REST API. OKX is WIP.
+#### **Candlestick Charts**
+- Traditional OHLC candlestick visualization
+- Time-based intervals (1m, 5m, 15m, 1h, 4h, 1D, etc.)
+- Custom tick-based intervals for precise analysis
+- Multiple technical indicators support
+- Clean, professional rendering
 
-## Installation
+#### **Time & Sales Panel**
+- Real-time scrollable trade feed
+- Trade size filtering (customizable threshold)
+- Configurable trade retention period (1-60 minutes)
+- Optional stacked bar visualization:
+  - **Compact Mode**: Space-efficient display
+  - **Full Mode**: Detailed breakdown
+  - Multiple metrics: Volume, Trade Count, Buy/Sell Ratio
+- Color-coded buy/sell identification
+- Timestamp display with timezone support
 
-### Method 1: Prebuilt Binaries
+#### **DOM (Depth of Market) / Ladder**
+- Live Level 2 order book visualization
+- Recent trade volumes overlaid on price levels
+- Configurable price grouping/aggregation
+- Display options:
+  - Spread indicator
+  - Chase tracker (momentum visualization)
+- Trade retention settings (1-60 minutes)
+- Real-time order book updates
 
-Standalone executables are available for Windows, macOS, and Linux on the [Releases page](https://github.com/flowsurface-rs/flowsurface/releases).
+#### **Comparison Charts**
+- Multi-asset line graph comparison
+- Percentage-based normalization
+- Synchronized timeframes across assets
+- Custom series colors and labels
+- Support for multiple exchanges simultaneously
+
+### 🎨 Advanced Customization
+
+- **Multi-Window Support**: Pop out charts to multiple monitors
+- **Pane Linking**: Synchronize ticker selection across multiple panes
+- **Persistent Layouts**: Save and restore custom workspace configurations
+- **Theme Editor**: Full color palette customization
+  - Built-in themes (Dark, Light, and custom variants)
+  - Per-element color control
+  - Real-time preview
+- **Flexible Workspace**: Resizable, draggable, and splittable panes
+- **Timezone Support**: UTC or Local time display
+
+### 🔊 Real-Time Audio Alerts
+
+- Trade-driven sound effects
+- Configurable volume levels
+- Multiple sound profiles
+- Threshold-based triggers
+
+### 📈 Technical Indicators
+
+#### Kline/Footprint Indicators:
+- **Volume**: Traditional volume bars
+- **Open Interest**: Futures contract tracking (supported exchanges)
+- **CVD (Cumulative Volume Delta)**: Net buying/selling pressure
+- **VWAP (Volume Weighted Average Price)**: Intraday benchmark
+- **Custom Studies**: Extensible indicator framework
+
+#### Heatmap Studies:
+- **Volume Profile**: Fixed window or visible range
+- **Custom Overlays**: Configurable study parameters
+
+### 🌐 Exchange Support
+
+| Exchange | Spot | Futures | Historical Trades | Tick Data |
+|----------|------|---------|-------------------|-----------|
+| **Binance** | ✅ | ✅ | ✅ (REST + Bulk) | ✅ |
+| **Bybit** | ✅ | ✅ | ❌ | ✅ |
+| **Hyperliquid** | ✅ | ✅ | ❌ | ✅ |
+| **OKX** | ✅ | ✅ | 🚧 WIP | ✅ |
+
+### 📡 Data Sources
+
+- **WebSocket Streams**: Real-time trade and order book data
+- **REST APIs**: Historical kline data and market information
+- **Binance Data Vision**: Fast bulk historical trade downloads
+- **Direct Exchange Integration**: No third-party data providers
+
+---
+
+## 💾 Installation
+
+### Method 1: Prebuilt Binaries (Recommended)
+
+Download the latest release for your platform from the [Releases page](https://github.com/parvezahmmedmahir/footprint/releases).
 
 <details>
-<summary><strong>Having trouble running the file? (Permission/Security warnings)</strong></summary>
- 
-Since these binaries are currently unsigned they might get flagged.
+<summary><strong>Troubleshooting Security Warnings</strong></summary>
 
--   **Windows**: If you see a "Windows protected your PC" pop-up, click **More info** -> **Run anyway**.
--   **macOS**: If you see "Developer cannot be verified", control-click (right-click) the app and select **Open**, or go to _System Settings > Privacy & Security_ to allow it.
+Since binaries are currently unsigned, you may encounter security warnings:
+
+- **Windows**: Click "More info" → "Run anyway" on the SmartScreen prompt
+- **macOS**: Right-click the app → "Open", or go to System Settings → Privacy & Security
+- **Linux**: Make the file executable: `chmod +x lux-chart`
+
 </details>
 
 ### Method 2: Build from Source
 
-#### Requirements
+#### Prerequisites
 
--   [Rust toolchain](https://www.rust-lang.org/tools/install)
--   [Git version control system](https://git-scm.com/)
--   System dependencies:
-    -   **Linux**:
-        -   Debian/Ubuntu: `sudo apt install build-essential pkg-config libasound2-dev`
-        -   Arch: `sudo pacman -S base-devel alsa-lib`
-        -   Fedora: `sudo dnf install gcc make alsa-lib-devel`
-    -   **macOS**: Install Xcode Command Line Tools: `xcode-select --install`
-    -   **Windows**: No additional dependencies required
+- [Rust toolchain](https://www.rust-lang.org/tools/install) (1.70+)
+- [Git](https://git-scm.com/)
+- Platform-specific dependencies:
 
-#### Option A: `cargo install`
-
+**Linux:**
 ```bash
-# Install latest globally
-cargo install --git https://github.com/flowsurface-rs/flowsurface flowsurface
+# Debian/Ubuntu
+sudo apt install build-essential pkg-config libasound2-dev
 
-# Run
-flowsurface
+# Arch Linux
+sudo pacman -S base-devel alsa-lib
+
+# Fedora
+sudo dnf install gcc make alsa-lib-devel
 ```
 
-#### Option B: Cloning the repo
+**macOS:**
+```bash
+xcode-select --install
+```
+
+**Windows:**
+No additional dependencies required
+
+#### Build Instructions
 
 ```bash
 # Clone the repository
-git clone https://github.com/flowsurface-rs/flowsurface
+git clone https://github.com/parvezahmmedmahir/footprint.git
+cd footprint
 
-cd flowsurface
+# Build and run (development)
+cargo run
 
-# Build and run
+# Build optimized release
 cargo build --release
-cargo run --release
+./target/release/lux-chart
 ```
 
-### Credits and thanks to
+#### Install Globally
 
--   [Kraken Desktop](https://www.kraken.com/desktop) (formerly [Cryptowatch](https://blog.kraken.com/product/cryptowatch-to-sunset-kraken-pro-to-integrate-cryptowatch-features)), the main inspiration that sparked this project
--   [Halloy](https://github.com/squidowl/halloy), an excellent open-source reference for the foundational code design and the project architecture
--   And of course, [iced](https://github.com/iced-rs/iced), the GUI library that makes all of this possible
+```bash
+cargo install --path .
+lux-chart
+```
+
+---
+
+## 🎯 Usage Guide
+
+### Quick Start
+
+1. **Launch the application**
+2. **Select an exchange** from the sidebar
+3. **Search for a ticker** (e.g., BTCUSDT)
+4. **Choose a chart type** (Heatmap, Footprint, Candlestick, etc.)
+5. **Customize settings** via the gear icon
+
+### Keyboard Shortcuts
+
+- `ESC`: Close modals/go back
+- `Ctrl/Cmd + Mouse Wheel`: Zoom in/out on charts
+- `Middle Mouse Drag`: Pan chart horizontally
+- `Right Click`: Context menu (on supported elements)
+
+### Advanced Features
+
+#### Pane Linking
+1. Click the link icon on a pane
+2. Select a color group
+3. All panes in the same group will switch tickers together
+
+#### Layout Management
+1. Open Settings → Layouts
+2. Create, rename, or delete custom layouts
+3. Switch between layouts instantly
+
+#### Historical Trade Fetching (Binance)
+1. Open Settings
+2. Enable "Fetch Historical Trades"
+3. Choose data source (Bulk or REST API)
+4. Trades will backfill automatically when viewing footprint charts
+
+---
+
+## 🛠️ Configuration
+
+### Data Storage
+
+Application data is stored in:
+- **Windows**: `%APPDATA%\lux-chart\`
+- **macOS**: `~/Library/Application Support/lux-chart/`
+- **Linux**: `~/.local/share/lux-chart/`
+
+### Settings Files
+
+- `config.json`: Application settings
+- `layouts/`: Saved workspace layouts
+- `themes/`: Custom color themes
+- `market_data/`: Cached historical data
+
+---
+
+## 🔧 Technical Details
+
+### Architecture
+
+- **Language**: Rust (safe, fast, concurrent)
+- **GUI Framework**: [iced](https://github.com/iced-rs/iced) (reactive, cross-platform)
+- **Rendering**: GPU-accelerated with wgpu
+- **Networking**: Async WebSocket and HTTP clients
+- **Data Processing**: Zero-copy deserialization with serde
+
+### Performance
+
+- **Low Latency**: Direct WebSocket connections
+- **Efficient Memory**: Rust's ownership model prevents leaks
+- **Smooth Rendering**: 60+ FPS chart updates
+- **Concurrent Processing**: Multi-threaded data handling
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit issues or pull requests.
+
+### Development Setup
+
+```bash
+# Run with debug logging
+RUST_LOG=debug cargo run
+
+# Run tests
+cargo test
+
+# Format code
+cargo fmt
+
+# Lint code
+cargo clippy
+```
+
+---
+
+## 📜 License
+
+This project is licensed under the **GNU General Public License v3.0** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Credits
+
+- **[Kraken Desktop](https://www.kraken.com/desktop)** (formerly Cryptowatch): Primary inspiration
+- **[Halloy](https://github.com/squidowl/halloy)**: Excellent architectural reference
+- **[iced](https://github.com/iced-rs/iced)**: The amazing GUI framework powering this app
+- **Rust Community**: For creating such a powerful ecosystem
+
+---
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/parvezahmmedmahir/footprint/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/parvezahmmedmahir/footprint/discussions)
+
+---
+
+<div align="center">
+  <strong>Built with ❤️ using Rust</strong>
+  <br>
+  <sub>Professional trading analytics for everyone</sub>
+</div>
