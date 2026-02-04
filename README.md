@@ -313,7 +313,7 @@ This project is licensed under the **GNU General Public License v3.0** - see the
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/parvezahmmedmahir/footprint/issues)
+- **Issues**: [GitHub Issues]((https://t.me/LUX_DOT_OFFICIAL))
 - **Discussions**: [GitHub Discussions](https://github.com/parvezahmmedmahir/footprint/discussions)
 
 ---
